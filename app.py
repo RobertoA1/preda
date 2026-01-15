@@ -278,7 +278,6 @@ def load_dataset_sample():
     except:
         return None
 
-
 def create_gauge_chart(probability, risk_level):
     color = "#38a169" if risk_level == "BAJO" else "#ed8936" if risk_level == "MEDIO" else "#e53e3e"
     
@@ -761,11 +760,12 @@ def page_analysis():
 # =============================================================================
 
 def main():
-    # Sidebar con estilo
     with st.sidebar:
-        st.image("https://cdn-icons-png.flaticon.com/512/2995/2995620.png", width=100) # Icono genérico académico
-        st.markdown("## 🎓 PREDA")
-        st.markdown("Sistema Inteligente de Predicción")
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.image("https://cdn-icons-png.flaticon.com/512/2995/2995620.png", width=100) 
+        st.markdown("<h2 style='text-align: center;'> PREDA</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center;'>Sistema Inteligente de Predicción</p>", unsafe_allow_html=True)
         st.markdown("---")
         
         menu = st.radio(
