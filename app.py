@@ -483,32 +483,45 @@ def page_prediction():
         # SECCIÓN 5 Y 6: RENDIMIENTO ACADÉMICO
         st.markdown('<div class="form-section">', unsafe_allow_html=True)
         st.markdown("### 📊 Rendimiento Académico")
+        st.info("📌 El modelo evalúa estudiantes que han completado al menos dos semestres académicos")
         
         tab1, tab2 = st.tabs(["Primer Semestre", "Segundo Semestre"])
         
         with tab1:
             col1, col2, col3 = st.columns(3)
             with col1:
-                cu_1st_credited = st.number_input("Unidades acreditadas", 0, 30, 0, key="1c")
-                cu_1st_enrolled = st.number_input("Unidades inscritas", 0, 30, 6, key="1e")
+                cu_1st_credited = st.number_input("Asignaturas acreditadas", 0, 30, 0, key="1c",
+                                                 help="Asignaturas reconocidas por experiencia previa")
+                cu_1st_enrolled = st.number_input("Asignaturas inscritas", 0, 30, 6, key="1e",
+                                                 help="Total de asignaturas matriculadas")
             with col2:
-                cu_1st_evaluations = st.number_input("Evaluaciones realizadas", 0, 50, 6, key="1ev")
-                cu_1st_approved = st.number_input("Unidades aprobadas", 0, 30, 5, key="1a")
+                cu_1st_evaluations = st.number_input("Evaluaciones realizadas", 0, 50, 6, key="1ev",
+                                                    help="Número total de evaluaciones presentadas")
+                cu_1st_approved = st.number_input("Asignaturas aprobadas", 0, 30, 5, key="1a",
+                                                 help="Asignaturas aprobadas exitosamente")
             with col3:
-                cu_1st_grade = st.number_input("Nota promedio (0-20)", 0.0, 20.0, 12.0, key="1g")
-                cu_1st_without_eval = st.number_input("Sin evaluaciones", 0, 30, 0, key="1w")
+                cu_1st_grade = st.number_input("Nota promedio (0-20)", 0.0, 20.0, 13.0, key="1g",
+                                              help="Promedio de calificaciones del semestre")
+                cu_1st_without_eval = st.number_input("Sin evaluaciones", 0, 30, 0, key="1w",
+                                                     help="Asignaturas sin evaluaciones presentadas")
         
         with tab2:
             col1, col2, col3 = st.columns(3)
             with col1:
-                cu_2nd_credited = st.number_input("Unidades acreditadas", 0, 30, 0, key="2c")
-                cu_2nd_enrolled = st.number_input("Unidades inscritas", 0, 30, 6, key="2e")
+                cu_2nd_credited = st.number_input("Asignaturas acreditadas", 0, 30, 0, key="2c",
+                                                 help="Asignaturas reconocidas por experiencia previa")
+                cu_2nd_enrolled = st.number_input("Asignaturas inscritas", 0, 30, 6, key="2e",
+                                                 help="Total de asignaturas matriculadas")
             with col2:
-                cu_2nd_evaluations = st.number_input("Evaluaciones realizadas", 0, 50, 6, key="2ev")
-                cu_2nd_approved = st.number_input("Unidades aprobadas", 0, 30, 5, key="2a")
+                cu_2nd_evaluations = st.number_input("Evaluaciones realizadas", 0, 50, 6, key="2ev",
+                                                    help="Número total de evaluaciones presentadas")
+                cu_2nd_approved = st.number_input("Asignaturas aprobadas", 0, 30, 5, key="2a",
+                                                 help="Asignaturas aprobadas exitosamente")
             with col3:
-                cu_2nd_grade = st.number_input("Nota promedio (0-20)", 0.0, 20.0, 12.0, key="2g")
-                cu_2nd_without_eval = st.number_input("Sin evaluaciones", 0, 30, 0, key="2w")
+                cu_2nd_grade = st.number_input("Nota promedio (0-20)", 0.0, 20.0, 13.0, key="2g",
+                                              help="Promedio de calificaciones del semestre")
+                cu_2nd_without_eval = st.number_input("Sin evaluaciones", 0, 30, 0, key="2w",
+                                                     help="Asignaturas sin evaluaciones presentadas")
         
         st.markdown('</div>', unsafe_allow_html=True)
         
