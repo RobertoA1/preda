@@ -1,0 +1,40 @@
+======================================================================
+REPORTE DE EVALUACIÓN - MODELO DE PREDICCIÓN DE DESERCIÓN ACADÉMICA
+======================================================================
+
+Fecha de generación: 2026-01-15 20:11:33
+
+----------------------------------------------------------------------
+INFORMACIÓN DEL MODELO
+----------------------------------------------------------------------
+  modelo: models/ann_dropout.keras
+  n_muestras_test: 885
+  n_features: 36
+
+----------------------------------------------------------------------
+MÉTRICAS DE EVALUACIÓN
+----------------------------------------------------------------------
+  Accuracy (Exactitud): 0.8701 (87.01%)
+  Precision (Precisión): 0.7924 (79.24%)
+  Recall (Sensibilidad): 0.8063 (80.63%)
+  F1-Score: 0.7993 (79.93%)
+  ROC-AUC: 0.9273
+
+----------------------------------------------------------------------
+INTERPRETACIÓN DE RESULTADOS
+----------------------------------------------------------------------
+  Desempeño general: EXCELENTE
+  Recomendación: El modelo muestra un desempeño sobresaliente.
+
+  Análisis de Recall: El modelo detecta la mayoría de estudiantes en riesgo.
+
+----------------------------------------------------------------------
+VISUALIZACIONES GENERADAS
+----------------------------------------------------------------------
+  - Matriz de Confusión: data/processed/plots/confusion_matrix.png
+  - Curva ROC: data/processed/plots/roc_curve.png
+
+======================================================================
+Fin del Reporte
+Sistema de Predicción de Deserción Académica
+======================================================================
