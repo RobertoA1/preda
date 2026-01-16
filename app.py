@@ -21,6 +21,17 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from src.data_preprocessing import load_data, preprocess_data
 from src.model_ann import load_trained_model, predict_single_student
+from src.evaluation_explainability import (
+    evaluate_model,
+    get_feature_importance,
+    explain_prediction
+)
+from src.streamlit_utils import (
+    display_metrics_streamlit,
+    display_evaluation_plots,
+    display_prediction_explanation,
+    display_feature_importance_streamlit
+)
 
 st.set_page_config(
     page_title="PREDA - Predicción de Deserción Académica",
@@ -705,7 +716,7 @@ Input (36) → Dense(64) → Dropout → Dense(32) → Dense(16) → Output(1)
 def page_analysis():
     st.markdown('<p class="main-header">Análisis y Métricas</p>', unsafe_allow_html=True)
     
-    tab1, tab2 = st.tabs(["📉 Métricas del Modelo", "📊 Exploración de Datos"])
+    tab1, tab2, tab3, tab4 = st.tabs(["📉 Métricas del Modelo", "📊 Exploración de Datos", "🎯 Evaluación del Modelo", "🔍 Explicabilidad"])
     
     with tab1:
         history = load_training_history()
@@ -767,6 +778,100 @@ def page_analysis():
                 st.plotly_chart(fig_bar, use_container_width=True)
         else:
             st.error("No se pudo cargar el dataset de muestra.")
+    
+    # =========================================================================
+    # TAB 3: EVALUACIÓN DEL MODELO (NUEVO)
+    # =========================================================================
+    with tab3:
+        st.markdown('<div class="info-box"><h3>🎯 Evaluación del Modelo en Datos de Prueba</h3></div>', unsafe_allow_html=True)
+        
+        # Cargar datos y modelo
+        try:
+            model = load_trained_model()
+            X_test = np.load('data/processed/X_test.npy')
+            y_test = np.load('data/processed/y_test.npy')
+            feature_names = np.load('data/processed/feature_names.npy', allow_pickle=True)
+            
+            st.success(f"✅ Datos cargados: {len(X_test)} muestras de prueba")
+            
+            # Calcular y mostrar métricas
+            with st.spinner("Calculando métricas de evaluación..."):
+                metrics = evaluate_model(model, X_test, y_test)
+            
+            # Mostrar métricas con la función de streamlit_utils
+            display_metrics_streamlit(metrics)
+            
+            st.markdown("---")
+            
+            # Mostrar visualizaciones
+            display_evaluation_plots(model, X_test, y_test)
+            
+        except FileNotFoundError as e:
+            st.error(f"⚠️ No se encontraron los archivos necesarios: {e}")
+            st.info("Asegúrate de que existan los archivos en data/processed/: X_test.npy, y_test.npy, feature_names.npy")
+        except Exception as e:
+            st.error(f"Error al cargar datos: {e}")
+    
+    # =========================================================================
+    # TAB 4: EXPLICABILIDAD (NUEVO)
+    # =========================================================================
+    with tab4:
+        st.markdown('<div class="info-box"><h3>🔍 Explicabilidad e Importancia de Características</h3></div>', unsafe_allow_html=True)
+        
+        try:
+            model = load_trained_model()
+            X_test = np.load('data/processed/X_test.npy')
+            y_test = np.load('data/processed/y_test.npy')
+            feature_names = np.load('data/processed/feature_names.npy', allow_pickle=True)
+            
+            # Sub-tabs para explicabilidad
+            exp_tab1, exp_tab2 = st.tabs(["📊 Importancia de Características", "🎓 Análisis Individual"])
+            
+            with exp_tab1:
+                st.markdown("#### Importancia de Características (Permutation Importance)")
+                st.info("Este análisis muestra qué características tienen mayor impacto en las predicciones del modelo.")
+                
+                if st.button("🔄 Calcular Importancia", key="calc_importance"):
+                    with st.spinner("Calculando importancia de características... (puede tomar unos minutos)"):
+                        importance_df = get_feature_importance(model, X_test, y_test, feature_names, n_repeats=5)
+                        st.session_state['importance_df'] = importance_df
+                
+                if 'importance_df' in st.session_state:
+                    display_feature_importance_streamlit(st.session_state['importance_df'], top_n=15)
+            
+            with exp_tab2:
+                st.markdown("#### Análisis de Predicción Individual")
+                st.info("Selecciona un estudiante del conjunto de prueba para ver el análisis detallado de su predicción.")
+                
+                col1, col2 = st.columns([1, 2])
+                
+                with col1:
+                    student_idx = st.number_input(
+                        "Índice del estudiante",
+                        min_value=0,
+                        max_value=len(X_test)-1,
+                        value=0,
+                        help=f"Selecciona un valor entre 0 y {len(X_test)-1}"
+                    )
+                    
+                    real_label = "Desertó" if y_test[student_idx] == 1 else "No desertó"
+                    st.metric("Etiqueta Real", real_label)
+                    
+                    if st.button("🔍 Analizar Estudiante", key="analyze_student"):
+                        st.session_state['analyze_idx'] = student_idx
+                
+                with col2:
+                    if 'analyze_idx' in st.session_state:
+                        display_prediction_explanation(
+                            model, 
+                            X_test[st.session_state['analyze_idx']], 
+                            feature_names
+                        )
+                        
+        except FileNotFoundError as e:
+            st.error(f"⚠️ No se encontraron los archivos necesarios: {e}")
+        except Exception as e:
+            st.error(f"Error: {e}")
 
 # =============================================================================
 # MAIN NAVIGATION
