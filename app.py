@@ -804,7 +804,6 @@ def page_analysis():
             st.markdown("---")
             
             # Mostrar visualizaciones
-            st.markdown("### 📈 Visualizaciones de Evaluación")
             display_evaluation_plots(model, X_test, y_test)
             
         except FileNotFoundError as e:
